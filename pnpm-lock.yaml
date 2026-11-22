@@ -244,6 +244,9 @@ importers:
       '@novice1/validator-typebox':
         specifier: workspace:^
         version: link:../../packages/validator-typebox
+      express:
+        specifier: ^5.3.0
+        version: 5.3.0(supports-color@8.1.1)
       typebox:
         specifier: ^1.4.7
         version: 1.4.7

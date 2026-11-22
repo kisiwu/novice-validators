@@ -8,20 +8,22 @@ router.post(
   {
     path: '/users',
     parameters: {
-      schema: {
+      typeboxSchema: {
         body: Type.Object({
-          name: Type.String(),
+          name: Type.String({ minLength: 1 }),
           email: Type.String({ format: 'email' }),
         }),
       },
     },
   },
-  (req, res) => res.json({ success: true, data: req.body })
+  (req, res) => {
+    res.json({ success: true, data: req.body });
+  }
 );
 
 router.get(
   ...withSettings({
-    path: '/api/items',
+    path: '/items',
     schema: {
       query: Type.Object({
         search: Type.String(),
@@ -31,11 +33,6 @@ router.get(
     },
   }).route((req, res) => {
     const { query } = req.validated!();
-
-    req.query.year; // '2005' (original string, untouched)
-    query?.year; // 2005 (number)
-    query?.includeArchived; // true (boolean)
-
     res.json({ validated: query, raw: req.query });
   })
 );

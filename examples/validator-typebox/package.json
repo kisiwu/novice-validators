@@ -15,6 +15,7 @@
   "dependencies": {
     "@novice1/app": "^0.10.0",
     "@novice1/validator-typebox": "workspace:^",
+    "express": "^5.3.0",
     "typebox": "^1.4.7"
   }
 }
