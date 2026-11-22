@@ -31,10 +31,12 @@ router.get(
         includeArchived: Type.Optional(Type.Boolean()),
       }),
     },
-  }).route((req, res) => {
-    const { query } = req.validated!();
-    res.json({ validated: query, raw: req.query });
-  })
+  }).route<{ validated: { search: string; year?: number; includeArchived?: boolean }; raw: Record<string, unknown> }>(
+    (req) => {
+      const { query } = req.validated!();
+      return { validated: query, raw: req.query };
+    }
+  )
 );
 
 export default routing().use('/api', router);

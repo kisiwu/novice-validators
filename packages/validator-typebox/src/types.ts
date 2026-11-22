@@ -1,3 +1,4 @@
+import type { ValidatorKind } from '@novice1/controller';
 import type { StaticDecode, TObject, TSchema } from 'typebox';
 
 /**
@@ -57,17 +58,8 @@ export type ValidatorTypeboxSchema =
       files?: TSchema | { [x: string]: TSchema };
     };
 
-export type RouteSchema = {
-  body?: TSchema;
-  query?: TSchema;
-  params?: TSchema;
-  headers?: TSchema;
-  cookies?: TSchema;
-  files?: TSchema;
-};
-export type Decoded<S, K extends keyof RouteSchema, Fallback = any> =
-  S extends Record<K, infer T extends TSchema> ? StaticDecode<T> : Fallback;
-
-export type ValidatedOf<S extends RouteSchema> = {
-  [K in keyof S]: S[K] extends TSchema ? StaticDecode<S[K]> : never;
-};
+export interface TypeboxKind extends ValidatorKind {
+  schemaBase: TSchema;
+  options: ValidatorTypeboxOptions;
+  output: this['input'] extends TSchema ? StaticDecode<this['input']> : never;
+}

@@ -1,4 +1,5 @@
-import type { ValidatedOf, ValidatorTypeboxOptions } from './types.js';
+import type { TypeboxKind, ValidatorTypeboxOptions } from './types.js';
+import type { ValidatedOf } from '@novice1/controller';
 import type routing from '@novice1/routing';
 import type { ParamsDictionary } from 'express-serve-static-core';
 import Extend from 'extend';
@@ -215,7 +216,8 @@ export function validatorTypebox(
       return propagateError(err);
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (req as routing.Request & { validated: () => ValidatedOf<any> }).validated = () => decodedValues as any;
+    (req as routing.Request & { validated: () => ValidatedOf<TypeboxKind, typeof schema> }).validated = () =>
+      decodedValues as any;
     return next();
   };
 }
