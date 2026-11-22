@@ -1,0 +1,20 @@
+{
+  "name": "examples-validator-typebox",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm exec tsc",
+    "check": "pnpm exec tsc --noEmit",
+    "dev": "tsx --watch ./src/index.ts",
+    "format": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --write .",
+    "format:check": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --check .",
+    "start": "node ./dist/index.js",
+    "test": "kaukau -r tsx -f test --ext .test.ts"
+  },
+  "dependencies": {
+    "@novice1/app": "^0.10.0",
+    "@novice1/validator-typebox": "workspace:^",
+    "typebox": "^1.4.7"
+  }
+}

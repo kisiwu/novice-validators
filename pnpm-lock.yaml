@@ -236,6 +236,18 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
 
+  examples/validator-typebox:
+    dependencies:
+      '@novice1/app':
+        specifier: ^0.10.0
+        version: 0.10.0(@novice1/routing@2.2.2(@types/express@5.0.6)(supports-color@8.1.1))(@types/express@5.0.6)(express@5.3.0(supports-color@8.1.1))
+      '@novice1/validator-typebox':
+        specifier: workspace:^
+        version: link:../../packages/validator-typebox
+      typebox:
+        specifier: ^1.4.7
+        version: 1.4.7
+
   packages/controller:
     dependencies:
       '@novice1/routing':
@@ -522,6 +534,17 @@ packages:
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
+
+  '@novice1/app@0.10.0':
+    resolution: {integrity: sha512-TkWR7/OPszi3HqC1qrLvEPCcXMsuUPxSyqhcBL0RUEXKz9tN3ZcV9aC7GhQ3KUgXdbzUqKSZI6cImFmLU/WReA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@novice1/routing': ^2.2.0
+      '@types/express': ^5.0.6
+      express: ^5.3.0
+    peerDependenciesMeta:
+      '@types/express':
+        optional: true
 
   '@novice1/logger@2.0.1':
     resolution: {integrity: sha512-GO9SyatM2ltiw86LFTFbJHpwCL0O8w+iv310nN8U1AbIEAWDO4aOSvQnXDbXZoAWOzslz/VI0JTqHMOuP7sVwQ==}
@@ -1832,6 +1855,14 @@ snapshots:
     optional: true
 
   '@noble/hashes@1.8.0': {}
+
+  '@novice1/app@0.10.0(@novice1/routing@2.2.2(@types/express@5.0.6)(supports-color@8.1.1))(@types/express@5.0.6)(express@5.3.0(supports-color@8.1.1))':
+    dependencies:
+      '@novice1/routing': 2.2.2(@types/express@5.0.6)(supports-color@8.1.1)
+      express: 5.3.0(supports-color@8.1.1)
+      tslib: 2.9.1
+    optionalDependencies:
+      '@types/express': 5.0.6
 
   '@novice1/logger@2.0.1(debug@4.4.3(supports-color@8.1.1))':
     dependencies:
