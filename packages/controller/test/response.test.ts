@@ -5,13 +5,12 @@ import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import request from 'supertest';
 
-describe('Usage', () => {
+describe('Response tests', () => {
   let app: express.Express;
 
   beforeEach(() => {
     // Setup code before each test
     app = express();
-    app.use(express.json());
   });
 
   it('should return the same json response from synchronous handlers', async () => {

@@ -66,7 +66,7 @@ export interface Controller<
 }
 
 /**
- * Wrap a controller function into an express request handler
+ * Wraps a controller function into an express request handler
  * @param handler
  * @returns
  */
@@ -82,6 +82,8 @@ export function controller<
 ): routing.RequestHandler<P, ResBody, ReqBody, ReqQuery, Locals, MetaResType> {
   return async function (req, res, next) {
     const value = await handler(req, res, next);
+
+    // If the handler returned a value, we need to handle it appropriately
     if (typeof value != 'undefined' && !res.headersSent) {
       // if the value is the response itself, do nothing
       // It causes timeout if request handler does not properly handle the response.

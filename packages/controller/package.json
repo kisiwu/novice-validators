@@ -35,17 +35,18 @@
   ],
   "author": "demingongo",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "cookie-parser": "^1.4.7"
+  },
   "peerDependencies": {
     "@novice1/routing": "^2.2.2",
     "@types/express": "^5.0.6",
+    "@types/express-serve-static-core": "^5.1.3",
     "@types/qs": "^6.15.1"
   },
   "peerDependenciesMeta": {
-    "@types/express": {
-      "optional": true
-    },
-    "@types/qs": {
+    "@types/express-serve-static-core": {
       "optional": true
     }
   }
