@@ -1,0 +1,11 @@
+packages:
+    - examples/*
+    - packages/*
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+    - '@novice1/routing@2.2.2'
+versioning:
+  changelog:
+    storage: repository

@@ -1,0 +1,52 @@
+{
+  "name": "@novice1/controller",
+  "version": "1.0.0",
+  "description": "Controller for @novice1/routing.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs",
+      "default": "./lib/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kisiwu/novice-validators.git",
+    "directory": "packages/controller"
+  },
+  "scripts": {
+    "build": "tsdown src/**/*.ts --format cjs,esm --out-dir lib --clean --dts --sourcemap --unbundle --no-fixed-extension",
+    "check": "tsc --noEmit",
+    "format": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --write .",
+    "format:check": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --check .",
+    "test": "kaukau --import tsx -f test/ --ext .test.ts"
+  },
+  "keywords": [
+    "controller",
+    "routing",
+    "api",
+    "framework",
+    "novice1"
+  ],
+  "author": "demingongo",
+  "license": "MIT",
+  "devDependencies": {},
+  "peerDependencies": {
+    "@novice1/routing": "^2.2.2",
+    "@types/express": "^5.0.6",
+    "@types/qs": "^6.15.1"
+  },
+  "peerDependenciesMeta": {
+    "@types/express": {
+      "optional": true
+    },
+    "@types/qs": {
+      "optional": true
+    }
+  }
+}
