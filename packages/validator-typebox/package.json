@@ -39,8 +39,7 @@
     "@types/extend": "^3.0.4"
   },
   "dependencies": {
-    "extend": "^3.0.2",
-    "tslib": "^2.9.1"
+    "extend": "^3.0.2"
   },
   "peerDependencies": {
     "@novice1/controller": "workspace:^",
