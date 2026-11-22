@@ -1,4 +1,4 @@
-import type { ValidatorKind } from '@novice1/controller';
+import type { ValidatorKind } from '@novice1/controller/validator-helpers';
 import type { StaticDecode, TObject, TSchema } from 'typebox';
 
 /**

@@ -1,8 +1,7 @@
 // Generic types for all type of validators
 // Should be able to define the route schema and validator options for you validator
 // then simply pass them to those types to build your own controller types based on your validator.
-import type { Controller } from './functions.js';
-import { controller } from './functions.js';
+import { type Controller, controller } from './functions.js';
 import type routing from '@novice1/routing';
 import type * as core from 'express-serve-static-core';
 import type qs from 'qs';

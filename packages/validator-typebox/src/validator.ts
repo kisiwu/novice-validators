@@ -1,5 +1,5 @@
 import type { TypeboxKind, ValidatorTypeboxOptions } from './types.js';
-import type { ValidatedOf } from '@novice1/controller';
+import type { ValidatedOf } from '@novice1/controller/validator-helpers';
 import type routing from '@novice1/routing';
 import type { ParamsDictionary } from 'express-serve-static-core';
 import Extend from 'extend';

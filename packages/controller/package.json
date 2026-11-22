@@ -12,6 +12,12 @@
       "import": "./lib/index.js",
       "require": "./lib/index.cjs",
       "default": "./lib/index.js"
+    },
+    "./validator-helpers": {
+      "types": "./lib/validator-helpers.d.ts",
+      "import": "./lib/validator-helpers.js",
+      "require": "./lib/validator-helpers.cjs",
+      "default": "./lib/validator-helpers.js"
     }
   },
   "repository": {
