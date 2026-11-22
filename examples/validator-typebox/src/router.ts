@@ -21,6 +21,33 @@ router.post(
   }
 );
 
+router.put(
+  ...withSettings({
+    path: '/users/:id',
+    schema: {
+      body: Type.Object({
+        name: Type.Optional(Type.String({ minLength: 1 })),
+        email: Type.Optional(Type.String({ format: 'email' })),
+      }),
+      params: Type.Object({
+        id: Type.Integer(),
+      }),
+    },
+  }).route<{
+    success: boolean;
+    updated: { name?: string; email?: string };
+    received: { name?: string; email?: string };
+    receivedId: number;
+    updatedId: number;
+  }>((req) => {
+    const {
+      body,
+      params: { id },
+    } = req.validated!();
+    return { success: true, updated: body, received: req.body, receivedId: req.params.id, updatedId: id };
+  })
+);
+
 router.get(
   ...withSettings({
     path: '/items',

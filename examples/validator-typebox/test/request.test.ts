@@ -23,6 +23,21 @@ describe('Request Validator', () => {
       .expect(200, { success: true, data: { name: 'John Doe', email: 'john.doe@example.com' } });
   });
 
+  it('should validate an optional update request', async () => {
+    await request(server)
+      .put('/api/users/81')
+      .send({
+        name: 'Jane Doe',
+      })
+      .expect(200, {
+        success: true,
+        updated: { name: 'Jane Doe' },
+        received: { name: 'Jane Doe' },
+        receivedId: 81,
+        updatedId: 81,
+      });
+  });
+
   it('should decode query parameters', async () => {
     await request(server)
       .get('/api/items')
