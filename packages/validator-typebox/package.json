@@ -1,0 +1,60 @@
+{
+  "name": "@novice1/validator-typebox",
+  "version": "2.0.0",
+  "description": "Typebox validator to use with @novice1/routing.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs",
+      "default": "./lib/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kisiwu/novice-validators.git",
+    "directory": "packages/validator-typebox"
+  },
+  "scripts": {
+    "build": "tsdown src/**/*.ts --format cjs,esm --out-dir lib --clean --dts --sourcemap --unbundle --no-fixed-extension",
+    "check": "tsc --noEmit",
+    "format": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --write .",
+    "format:check": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --check .",
+    "test": "kaukau --import tsx -f test/ --ext .test.ts"
+  },
+  "keywords": [
+    "express",
+    "typebox",
+    "middleware",
+    "validator",
+    "novice1"
+  ],
+  "author": "demingongo",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/extend": "^3.0.4"
+  },
+  "dependencies": {
+    "extend": "^3.0.2",
+    "tslib": "^2.9.1"
+  },
+  "peerDependencies": {
+    "@novice1/controller": "workspace:^",
+    "@novice1/routing": "^2.2.0",
+    "@types/express-serve-static-core": "^5.1.3",
+    "@types/qs": "^6.15.1",
+    "typebox": "^1.4.7"
+  },
+  "peerDependenciesMeta": {
+    "@novice1/routing": {
+      "optional": true
+    },
+    "@types/express-serve-static-core": {
+      "optional": true
+    }
+  }
+}
