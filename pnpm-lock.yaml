@@ -279,7 +279,7 @@ importers:
         specifier: workspace:^
         version: link:../controller
       '@novice1/routing':
-        specifier: ^2.2.0
+        specifier: ^2.2.2
         version: 2.2.2(@types/express@5.0.6)(supports-color@8.1.1)
       '@standard-schema/spec':
         specifier: ^1.1.0
@@ -307,7 +307,7 @@ importers:
         specifier: workspace:^
         version: link:../controller
       '@novice1/routing':
-        specifier: ^2.2.0
+        specifier: ^2.2.2
         version: 2.2.2(@types/express@5.0.6)(supports-color@8.1.1)
       '@types/express-serve-static-core':
         specifier: ^5.1.3

@@ -43,7 +43,7 @@
   },
   "peerDependencies": {
     "@novice1/controller": "workspace:^",
-    "@novice1/routing": "^2.2.0",
+    "@novice1/routing": "^2.2.2",
     "@types/express-serve-static-core": "^5.1.3",
     "@types/qs": "^6.15.1",
     "typebox": "^1.4.7"

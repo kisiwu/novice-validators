@@ -1,5 +1,6 @@
 {
   "name": "novice-validators",
+  "private": true,
   "version": "1.0.0",
   "description": "Request validators for @novice1/routing.",
   "homepage": "https://github.com/kisiwu/novice-validators",
