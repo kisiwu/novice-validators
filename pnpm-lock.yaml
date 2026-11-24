@@ -256,9 +256,6 @@ importers:
       '@novice1/routing':
         specifier: ^2.2.2
         version: 2.2.2(@types/express@5.0.6)(supports-color@8.1.1)
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
       '@types/express-serve-static-core':
         specifier: ^5.1.3
         version: 5.1.3

@@ -1,6 +1,10 @@
 # @novice1/controller
 
-Controller for @novice1/routing.
+Controllers for [@novice1/routing](https://github.com/kisiwu/novice-routing): write route handlers that **return** their response instead of calling `res` yourself, with typed requests and responses.
+
+- Return an object, string, `Buffer` or stream and it is sent for you
+- Async handlers work out of the box, and errors are passed on to your error middleware
+- Typed params, body, query, response body and locals, either positionally or from a single object (`controllerOf`)
 
 ## Installation
 
@@ -8,78 +12,132 @@ Controller for @novice1/routing.
 npm install @novice1/controller
 ```
 
-## Usage
+Peer dependencies for typescript users: `@novice1/routing`, `@types/express-serve-static-core` and `@types/qs`.
 
-### Basic Usage
+## `controller`
+
+Wraps a handler into a `@novice1/routing` request handler.
 
 ```ts
 import { controller } from '@novice1/controller';
 import routing from '@novice1/routing';
 import express from 'express';
 
-const app = express();
 const router = routing().get(
-  '/example',
-  controller((_, res) => {
-    res.json({ message: 'Hello World' });
-  })
+  '/hello',
+  controller(() => ({ message: 'Hello World' }))
 );
 
-app.use(router);
+express().use(router).listen(3000);
 ```
 
-### Return response
-
-You can return the response body directly from the controller function.
+You can still use `res` as usual. Returning nothing leaves the response to you:
 
 ```ts
-import { controller } from '@novice1/controller';
-import routing from '@novice1/routing';
-import express from 'express';
+controller((_, res) => {
+  res.json({ message: 'Hello World' });
+});
+```
 
-const app = express();
-const router = routing().get(
-  '/example',
-  controller((_, res) => ({ message: 'Hello World' }))
-);
+### What can be returned
 
-app.use(router);
+If the handler returns a value (and headers aren't already sent), it is handled like this:
+
+| Returned value                               | Result                                  |
+| -------------------------------------------- | --------------------------------------- |
+| `undefined`                                  | Nothing, you respond via `res`          |
+| the `res` object                             | Nothing, already handled                |
+| Web `ReadableStream` / Node `Readable`       | Piped to `res` (errors are propagated)  |
+| Any other stream                             | Throws a `ControllerError`              |
+| `Buffer`                                     | `res.send(buffer)`                      |
+| Object (no `Content-Type` set)               | `res.json(value)`                       |
+| String (no `Content-Type` set)               | Sent as `text/plain`                    |
+| Anything else                                | `res.send(value)`                       |
+
+Errors thrown (or promises rejected) by the handler are forwarded to Express' error handling.
+
+```ts
+controller(async (req) => {
+  const user = await findUser(req.params.id); // throws -> error middleware
+  return user;
+});
 ```
 
 ### Generic types
 
-You can define the types for:
-
-- Request parameters
-- Response body
-- Request body
-- Request query
-- Response locals
-
-Signature:
-
 ```ts
-controller<Params, ResponseBody, RequestBody, RequestQuery, ResponseLocals>((req, res) => {
+controller<Params, ResBody, ReqBody, ReqQuery, Locals, Meta>((req, res) => {
   /* ... */
 });
 ```
 
-Example:
-
 ```ts
-import { controller } from '@novice1/controller';
-import routing from '@novice1/routing';
-import express from 'express';
-
-const app = express();
-const router = routing().get(
-  '/example',
-  controller<{}, { message: string }>((_, res) => {
-    res.json({ message: 'Hello World' });
-  })
-);
-
-app.use(router);
+controller<{ id: string }, { name: string }>((req) => ({ name: `user ${req.params.id}` }));
 ```
 
-> The first generic type `{}` represents the request parameters, and the second generic type `{ message: string }` represents the response body.
+The returned value is type checked against `ResBody`.
+
+## `controllerOf`
+
+Same behavior as `controller`, but the types are given in **one object**, so you only list what you care about. Omitted keys fall back to their defaults (`any`, route params dictionary, `ParsedQs`).
+
+Keys: `params`, `body`, `query`, `resBody`.
+
+```ts
+import { controllerOf } from '@novice1/controller';
+
+routing().put(
+  '/users/:id',
+  controllerOf<{
+    params: { id: string };
+    body: { name: string };
+    resBody: { id: string; name: string };
+  }>((req) => ({ id: req.params.id, name: req.body.name }))
+);
+```
+
+A second and third generic set `res.locals` and the response meta:
+
+```ts
+controllerOf<{ resBody: { ok: boolean } }, { userId: string }>((_, res) => ({ ok: !!res.locals.userId }));
+```
+
+## Building validator helpers (advanced)
+
+`@novice1/controller/validator-helpers` exposes `createValidatorHelpers`, used to build `route` and `withSettings` helpers for a validation library. They:
+
+- store the route `schema`, validator `options` and `onerror` in the route `parameters`,
+- infer `params` and `body` types from the schema (`req.validated()` gives the validated parts),
+- wrap your handlers with `controller`.
+
+Handlers appended after the spread are not wrapped, so type them to match the route.
+
+```ts
+import { createValidatorHelpers, type ValidatorKind } from '@novice1/controller/validator-helpers';
+
+interface MyKind extends ValidatorKind {
+  schemaBase: MySchema;
+  options: MyOptions;
+  output: this['input'] extends MySchema ? Infer<this['input']> : never;
+}
+
+export const { route, withSettings } = createValidatorHelpers<MyKind>({
+  schemaKey: 'mySchema',
+  optionsKey: 'myValidatorOptions',
+});
+```
+
+```ts
+router.put(
+  ...withSettings({ path: '/users/:id', schema: { params, body } }).route<{ ok: boolean }>((req) => {
+    const { body, params } = req.validated!();
+    return { ok: true };
+  })
+);
+```
+
+`withSettings(...).route<ResBody, Locals, Meta>()` only asks for what the settings don't infer.
+
+## License
+
+MIT

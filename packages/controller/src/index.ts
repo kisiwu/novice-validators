@@ -1,7 +1,7 @@
 export {
   controller,
   controllerOf,
-  type ControllerError,
+  ControllerError,
   type Controller,
   type ReqRef,
   type ReqRefDefaults,
