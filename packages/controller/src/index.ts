@@ -1,6 +1,6 @@
 export {
   controller,
-  controllerV2,
+  controllerOf,
   type ControllerError,
   type Controller,
   type ReqRef,

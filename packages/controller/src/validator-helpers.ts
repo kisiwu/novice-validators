@@ -146,14 +146,3 @@ export function createValidatorHelpers<K extends ValidatorKind>(b: ValidatorBind
   }
   return { route, withSettings };
 }
-
-/*
-interface TypeboxKind extends ValidatorKind {
-  schemaBase: TSchema;
-  options: ValidatorTypeboxOptions;
-  output: this['input'] extends TSchema ? StaticDecode<this['input']> : never;
-}
-export const { route, withSettings } = createValidatorHelpers<TypeboxKind>({
-  schemaKey: 'typeboxSchema', optionsKey: 'validatorTypeboxOptions',
-});
-*/

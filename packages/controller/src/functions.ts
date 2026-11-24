@@ -42,7 +42,7 @@ export class ControllerError extends Error {
 //#region controller
 
 /**
- * Controller function type
+ *
  */
 export interface Controller<
   P = core.ParamsDictionary,
@@ -66,9 +66,10 @@ export interface Controller<
 }
 
 /**
- * Wraps a controller function into an express request handler
- * @param handler
- * @returns
+ * Wraps a controller function into an Novice routing request handler.
+ *
+ * @param handler The controller function to wrap.
+ * @returns An Novice routing request handler that invokes the controller.
  */
 export function controller<
   P = core.ParamsDictionary,
@@ -136,7 +137,7 @@ export function controller<
 
 //#endregion controller
 
-//#region controllerV2
+//#region controllerOf
 
 export type ReqRefDefaults = {
   body: any;
@@ -147,32 +148,40 @@ export type ReqRefDefaults = {
 
 export type ReqRef = Partial<Record<keyof ReqRefDefaults, any>>;
 
-type OutputOf<S, K extends string, Fallback> = S extends { [P in K]: infer T }
-  ? T extends undefined
+type OutputOf<S, K extends keyof ReqRefDefaults, Fallback = ReqRefDefaults[K]> = K extends keyof S
+  ? unknown extends Exclude<S[K], undefined> // missing, `any` or `unknown` -> use fallback
     ? Fallback
-    : Fallback
-  : S;
+    : Exclude<S[K], undefined>
+  : Fallback;
 
 /**
- * WIP: Wrap a controller function into an express request handler
- * @param handler
- * @returns
+ * Wraps a controller function into an Novice routing request handler.
+ *
+ * @param handler The controller function to wrap.
+ * @returns An Novice routing request handler that invokes the controller.
  */
-export function controllerV2<
+export function controllerOf<
   Refs extends ReqRef = ReqRefDefaults,
   Locals extends Record<string, any> = Record<string, any>,
   MetaResType = unknown,
 >(
   handler: Controller<
-    OutputOf<Refs, 'params', core.ParamsDictionary>,
-    OutputOf<Refs, 'resBody', any>,
-    OutputOf<Refs, 'body', any>,
-    ParsedQs,
+    OutputOf<Refs, 'params'>,
+    OutputOf<Refs, 'resBody'>,
+    OutputOf<Refs, 'body'>,
+    OutputOf<Refs, 'query'>,
     Locals,
     MetaResType
   >
-): routing.RequestHandler<Refs['params'], Refs['resBody'], Refs['body'], Refs['query'], Locals, MetaResType> {
+): routing.RequestHandler<
+  OutputOf<Refs, 'params'>,
+  OutputOf<Refs, 'resBody'>,
+  OutputOf<Refs, 'body'>,
+  OutputOf<Refs, 'query'>,
+  Locals,
+  MetaResType
+> {
   return controller(handler);
 }
 
-//#endregion controllerV2
+//#endregion controllerOf
