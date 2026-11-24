@@ -130,7 +130,10 @@ export const { route, withSettings } = createValidatorHelpers<MyKind>({
 
 ```ts
 router.put(
-  ...withSettings({ path: '/users/:id', schema: { params, body } }).route<{ ok: boolean }>((req) => {
+  ...withSettings({ 
+    path: '/users/:id', 
+    schema: { params, body } 
+  }).route<{ ok: boolean }>((req) => {
     const { body, params } = req.validated!();
     return { ok: true };
   })
