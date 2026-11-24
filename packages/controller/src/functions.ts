@@ -27,7 +27,15 @@ function isNodeReadableStream(stream: unknown): stream is Readable {
   );
 }
 
+/**
+ * Error thrown by {@link controller} when a returned value can't be turned into a response
+ * (for example an unsupported stream type).
+ */
 export class ControllerError extends Error {
+  /**
+   * @param message Human-readable description of the failure.
+   * @param details Optional extra context (e.g. the offending value), exposed as `error.details`.
+   */
   constructor(message: string, details?: any) {
     super(message);
     this.name = 'ControllerError';
@@ -42,7 +50,20 @@ export class ControllerError extends Error {
 //#region controller
 
 /**
+ * A request handler that may *return* its response instead of (or in addition to) calling `res`.
+ * Wrap it with {@link controller} or {@link controllerOf} to get a Novice routing request handler.
  *
+ * The handler may be sync or async and may return:
+ * - nothing (`void`): the handler is expected to respond through `res` itself;
+ * - the `res` object: treated as already handled;
+ * - a response body (`ResBody`): sent by the wrapper.
+ *
+ * @template P Route parameters.
+ * @template ResBody Response body.
+ * @template ReqBody Request body.
+ * @template ReqQuery Parsed query string.
+ * @template Locals `res.locals` type.
+ * @template MetaResType Type of the route's response meta.
  */
 export interface Controller<
   P = core.ParamsDictionary,
@@ -66,10 +87,31 @@ export interface Controller<
 }
 
 /**
- * Wraps a controller function into an Novice routing request handler.
+ * Wraps a {@link Controller} into a Novice routing request handler and sends whatever it returns.
  *
+ * Returned values are handled as follows (skipped if `undefined` or headers were already sent):
+ * - the `res` object: nothing more is done;
+ * - web or Node readable stream: piped to `res` with `pipeline`;
+ * - any other stream: throws a {@link ControllerError};
+ * - `Buffer`: sent as is;
+ * - object without a `Content-Type` header: sent with `res.json()`;
+ * - string without a `Content-Type` header: sent as `text/plain`;
+ * - anything else: sent with `res.send()`.
+ *
+ * Errors thrown or rejected by the handler are propagated to the caller of the returned handler.
+ *
+ * @example
+ * route.get('/hello', controller(() => ({ message: 'Hello World' })));
+ *
+ * @template P Route parameters.
+ * @template ResBody Response body.
+ * @template ReqBody Request body.
+ * @template ReqQuery Parsed query string.
+ * @template Locals `res.locals` type.
+ * @template MetaResType Type of the route's response meta.
  * @param handler The controller function to wrap.
- * @returns An Novice routing request handler that invokes the controller.
+ * @returns A Novice routing request handler that invokes the controller.
+ * @throws {ControllerError} If the returned value is an unsupported stream.
  */
 export function controller<
   P = core.ParamsDictionary,
@@ -139,6 +181,10 @@ export function controller<
 
 //#region controllerOf
 
+/**
+ * Default types for each slot of {@link ReqRef}. A slot that is omitted (or `any`/`unknown`)
+ * in a `ReqRef` resolves to the matching entry here.
+ */
 export type ReqRefDefaults = {
   body: any;
   params: core.ParamsDictionary;
@@ -146,6 +192,13 @@ export type ReqRefDefaults = {
   resBody: any;
 };
 
+/**
+ * Describes the request and response types of a controller in a single object,
+ * instead of positional generics. Every key is optional.
+ *
+ * @example
+ * type Refs = { params: { id: string }; body: { name: string }; resBody: { ok: boolean } };
+ */
 export type ReqRef = Partial<Record<keyof ReqRefDefaults, any>>;
 
 type OutputOf<S, K extends keyof ReqRefDefaults, Fallback = ReqRefDefaults[K]> = K extends keyof S
@@ -155,10 +208,18 @@ type OutputOf<S, K extends keyof ReqRefDefaults, Fallback = ReqRefDefaults[K]> =
   : Fallback;
 
 /**
- * Wraps a controller function into an Novice routing request handler.
+ * Same as {@link controller}, but types are given as a single {@link ReqRef} object.
+ * Omitted keys fall back to {@link ReqRefDefaults}, and the handler's return value
+ * is checked against `resBody`.
  *
+ * @example
+ * controllerOf<{ params: { id: string }; resBody: { id: string } }>((req) => ({ id: req.params.id }));
+ *
+ * @template Refs Object with optional `params`, `body`, `query` and `resBody` types.
+ * @template Locals `res.locals` type.
+ * @template MetaResType Type of the route's response meta.
  * @param handler The controller function to wrap.
- * @returns An Novice routing request handler that invokes the controller.
+ * @returns A Novice routing request handler that invokes the controller.
  */
 export function controllerOf<
   Refs extends ReqRef = ReqRefDefaults,
