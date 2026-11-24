@@ -143,10 +143,10 @@ export interface ValidatorBinding {
  * - `route(settings, ...handlers)` moves `schema`, `options` and `onerror` into the route `parameters`
  *   (under the keys in `b`), wraps each handler with {@link controller} so returned values are sent as
  *   the response, and returns a {@link SchemaRouteTuple} that can be spread into a router method.
- * - `withSettings(settings).route<ResBody, Locals, Meta>(...handlers)` does the same, but binds the settings
+ * - `withSettings(settings).route<ResBody, Locals>(...handlers)` does the same, but binds the settings
  *   first so that the types the schema already infers (`params`, `body`, …) don't have to be redefined.
- *   Its `route` only accepts the types that aren't part of the settings: the response body, `res.locals` and
- *   the response meta. Use it when you want to type those explicitly.
+ *   Its `route` only accepts the types that aren't part of the settings: the response body and `res.locals`.
+ *   Use it when you want to type those explicitly.
  *
  * Only the handlers passed to these helpers are wrapped. Handlers appended after the spread
  * (e.g. a plain `RequestHandler` or an `ErrorRequestHandler`) are left untouched, so they keep their
@@ -192,15 +192,15 @@ export function createValidatorHelpers<K extends ValidatorKind>(b: ValidatorBind
 
   /**
    * Binds route settings so the returned `route()` only takes the types that aren't part of the settings
-   * (`ResBody`, `Locals`, `Meta`), while `params` and `body` come from the schema.
+   * (`ResBody`, `Locals`), while `params` and `body` come from the schema.
    *
    * @param settings Route settings including the `schema`, validator `options` and `onerror`.
    */
-  function withSettings<Path extends core.PathParams, S extends RouteSchemaOf<K>>(
-    settings: SchemaMethodSettings<K, Path, S, any, Record<string, any>, any>
+  function withSettings<Path extends core.PathParams, S extends RouteSchemaOf<K>, Meta = any>(
+    settings: SchemaMethodSettings<K, Path, S, any, Record<string, any>, Meta>
   ) {
     return {
-      route<ResBody = any, Locals extends Record<string, any> = Record<string, any>, Meta = any>(
+      route<ResBody = any, Locals extends Record<string, any> = Record<string, any>>(
         ...handlers: SchemaHandlersFor<K, Path, S, ResBody, Locals, Meta>
       ) {
         return route(settings, ...handlers);

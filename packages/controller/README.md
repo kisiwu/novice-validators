@@ -43,16 +43,16 @@ controller((_, res) => {
 
 If the handler returns a value (and headers aren't already sent), it is handled like this:
 
-| Returned value                               | Result                                  |
-| -------------------------------------------- | --------------------------------------- |
-| `undefined`                                  | Nothing, you respond via `res`          |
-| the `res` object                             | Nothing, already handled                |
-| Web `ReadableStream` / Node `Readable`       | Piped to `res` (errors are propagated)  |
-| Any other stream                             | Throws a `ControllerError`              |
-| `Buffer`                                     | `res.send(buffer)`                      |
-| Object (no `Content-Type` set)               | `res.json(value)`                       |
-| String (no `Content-Type` set)               | Sent as `text/plain`                    |
-| Anything else                                | `res.send(value)`                       |
+| Returned value                         | Result                                 |
+| -------------------------------------- | -------------------------------------- |
+| `undefined`                            | Nothing, you respond via `res`         |
+| the `res` object                       | Nothing, already handled               |
+| Web `ReadableStream` / Node `Readable` | Piped to `res` (errors are propagated) |
+| Any other stream                       | Throws a `ControllerError`             |
+| `Buffer`                               | `res.send(buffer)`                     |
+| Object (no `Content-Type` set)         | `res.json(value)`                      |
+| String (no `Content-Type` set)         | Sent as `text/plain`                   |
+| Anything else                          | `res.send(value)`                      |
 
 Errors thrown (or promises rejected) by the handler are forwarded to Express' error handling.
 
@@ -101,6 +101,7 @@ A second and third generic set `res.locals` and the response meta:
 ```ts
 controllerOf<{ resBody: { ok: boolean } }, { userId: string }>((_, res) => ({ ok: !!res.locals.userId }));
 ```
+The order is: `controllerOf<Schema, Locals, Meta>()`.
 
 ## Building validator helpers (advanced)
 
@@ -136,7 +137,7 @@ router.put(
 );
 ```
 
-`withSettings(...).route<ResBody, Locals, Meta>()` only asks for what the settings don't infer.
+`withSettings(...).route<ResBody, Locals>()` only asks for what the settings don't infer.
 
 ## License
 
