@@ -1,0 +1,12 @@
+"@novice1/controller@1.0.0":
+  dir: packages/controller
+  intents:
+    - pretty-hounds-beam
+"@novice1/validator-joi@1.0.0":
+  dir: packages/validator-joi
+  intents:
+    - pretty-hounds-beam
+"@novice1/validator-typebox@2.0.0":
+  dir: packages/validator-typebox
+  intents:
+    - pretty-hounds-beam

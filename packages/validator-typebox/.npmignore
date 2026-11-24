@@ -7,6 +7,7 @@ test/
 .todo
 typedoc.json
 tsconfig.json
+CHANGELOG.md
 
 # Logs
 logs

@@ -101,6 +101,7 @@ A second and third generic set `res.locals` and the response meta:
 ```ts
 controllerOf<{ resBody: { ok: boolean } }, { userId: string }>((_, res) => ({ ok: !!res.locals.userId }));
 ```
+
 The order is: `controllerOf<Schema, Locals, Meta>()`.
 
 ## Building validator helpers (advanced)
@@ -130,9 +131,9 @@ export const { route, withSettings } = createValidatorHelpers<MyKind>({
 
 ```ts
 router.put(
-  ...withSettings({ 
-    path: '/users/:id', 
-    schema: { params, body } 
+  ...withSettings({
+    path: '/users/:id',
+    schema: { params, body },
   }).route<{ ok: boolean }>((req) => {
     const { body, params } = req.validated!();
     return { ok: true };
