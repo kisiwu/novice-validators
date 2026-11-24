@@ -45,7 +45,17 @@ router.put(
       params: { id },
     } = req.validated!();
     return { success: true, updated: body, received: req.body, receivedId: req.params.id, updatedId: id };
-  })
+  }),
+
+  // Additional handlers can be added here if needed
+
+  ((_, res) => {
+    res.json({ success: true });
+  }) as routing.RequestHandler<{ id: number }>,
+  ((err, _, res, __) => {
+    console.error(err);
+    res.status(400).json(err);
+  }) as routing.ErrorRequestHandler<any>
 );
 
 router.get(

@@ -119,7 +119,14 @@ export type SchemaRouteTuple<
     Locals,
     MetaResType
   >,
-  ...SchemaHandlersFor<K, Path, S, ResBody, Locals, MetaResType>,
+  ...routing.RequestHandler<
+    ParamsOf<K, Path, S>,
+    ResBody,
+    OutputOf<K, S, 'body', any>,
+    qs.ParsedQs,
+    Locals,
+    MetaResType
+  >[],
 ];
 
 /** Maps the helper's schema and options onto the keys read from route `parameters` (e.g. `'schema'`). */
@@ -133,12 +140,29 @@ export interface ValidatorBinding {
 /**
  * Builds typed `route` and `withSettings` helpers for a validator.
  *
- * - `route(settings, ...handlers)` moves `schema`, `options` and `onerror` into `parameters`
- *   (under the keys in `b`) and returns a {@link SchemaRouteTuple}.
- * - `withSettings(settings).route(...handlers)` does the same but wraps each handler with {@link controller}.
+ * - `route(settings, ...handlers)` moves `schema`, `options` and `onerror` into the route `parameters`
+ *   (under the keys in `b`), wraps each handler with {@link controller} so returned values are sent as
+ *   the response, and returns a {@link SchemaRouteTuple} that can be spread into a router method.
+ * - `withSettings(settings).route<ResBody, Locals, Meta>(...handlers)` does the same, but binds the settings
+ *   first so that the types the schema already infers (`params`, `body`, …) don't have to be redefined.
+ *   Its `route` only accepts the types that aren't part of the settings: the response body, `res.locals` and
+ *   the response meta. Use it when you want to type those explicitly.
+ *
+ * Only the handlers passed to these helpers are wrapped. Handlers appended after the spread
+ * (e.g. a plain `RequestHandler` or an `ErrorRequestHandler`) are left untouched, so they keep their
+ * arity and must be typed by hand to match the route, e.g. `RequestHandler<{ id: number }>`.
+ *
+ * @example
+ * router.put(
+ *   ...withSettings({ path: '/users/:id', schema }).route<{ id: number }>((req) => ({
+ *     id: req.validated!().params.id,
+ *   })),
+ *   ((err, _req, res, _next) => res.status(400).json(err)) as routing.ErrorRequestHandler<any>
+ * );
  *
  * @template K The validator kind.
  * @param b Keys under which the schema and options are stored in route `parameters`.
+ * @returns The `route` and `withSettings` helpers.
  */
 export function createValidatorHelpers<K extends ValidatorKind>(b: ValidatorBinding) {
   function route<
@@ -166,6 +190,12 @@ export function createValidatorHelpers<K extends ValidatorKind>(b: ValidatorBind
     ] as any;
   }
 
+  /**
+   * Binds route settings so the returned `route()` only takes the types that aren't part of the settings
+   * (`ResBody`, `Locals`, `Meta`), while `params` and `body` come from the schema.
+   *
+   * @param settings Route settings including the `schema`, validator `options` and `onerror`.
+   */
   function withSettings<Path extends core.PathParams, S extends RouteSchemaOf<K>>(
     settings: SchemaMethodSettings<K, Path, S, any, Record<string, any>, any>
   ) {
