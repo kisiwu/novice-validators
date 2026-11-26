@@ -6,7 +6,7 @@ test/
 .prettierignore
 .todo
 typedoc.json
-tsconfig.json
+tsconfig*.json
 CHANGELOG.md
 
 # Logs
