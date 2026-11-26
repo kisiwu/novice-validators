@@ -1,6 +1,6 @@
 {
   "name": "@novice1/controller",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Controller for @novice1/routing.",
   "type": "module",
   "main": "./lib/index.js",

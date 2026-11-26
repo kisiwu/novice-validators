@@ -2,6 +2,10 @@
   dir: packages/controller
   intents:
     - pretty-hounds-beam
+"@novice1/controller@1.0.1":
+  dir: packages/controller
+  intents:
+    - nice-taxis-hammer
 "@novice1/validator-joi@1.0.0":
   dir: packages/validator-joi
   intents:
