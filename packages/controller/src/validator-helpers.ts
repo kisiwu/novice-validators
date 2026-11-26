@@ -80,7 +80,7 @@ export type SchemaHandlersFor<
 > = SchemaController<
   ParamsOf<K, Path, S>,
   ResBody,
-  OutputOf<K, S, 'body', any>,
+  OutputOf<K, S, 'body', unknown>,
   qs.ParsedQs,
   Locals,
   Meta,
@@ -95,7 +95,7 @@ export type SchemaMethodSettings<
   ResBody,
   Locals extends Record<string, any>,
   MetaResType,
-> = routing.RouteSettings<Path, core.ParamsDictionary, ResBody, any, qs.ParsedQs, Locals, MetaResType> & {
+> = routing.RouteSettings<Path, core.ParamsDictionary, ResBody, unknown, qs.ParsedQs, Locals, MetaResType> & {
   schema: S;
   options?: K['options'] | undefined;
   onerror?: routing.ErrorRequestHandler | undefined;
@@ -114,7 +114,7 @@ export type SchemaRouteTuple<
     Path,
     ParamsOf<K, Path, S>,
     ResBody,
-    OutputOf<K, S, 'body', any>,
+    OutputOf<K, S, 'body', unknown>,
     qs.ParsedQs,
     Locals,
     MetaResType
@@ -122,7 +122,7 @@ export type SchemaRouteTuple<
   ...routing.RequestHandler<
     ParamsOf<K, Path, S>,
     ResBody,
-    OutputOf<K, S, 'body', any>,
+    OutputOf<K, S, 'body', unknown>,
     qs.ParsedQs,
     Locals,
     MetaResType

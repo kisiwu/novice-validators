@@ -39,7 +39,7 @@ describe('Request tests', () => {
   it('should retrieve body parameters correctly', async () => {
     const router = routing().post(
       '/user',
-      controller(({ body: { name } }) => ({ name }))
+      controller(({ body }) => ({ name: (body as { name: string }).name }))
     );
 
     app.use(router);

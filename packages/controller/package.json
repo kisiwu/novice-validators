@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build": "tsdown src/**/*.ts --format cjs,esm --out-dir lib --clean --dts --sourcemap --unbundle --no-fixed-extension",
-    "check": "tsc --noEmit",
+    "check": "tsc --noEmit && tsc --noEmit -p ./tsconfig.test.json",
     "format": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --write .",
     "format:check": "cross-env NODE_OPTIONS=--experimental-strip-types prettier --check .",
     "test": "kaukau --import tsx -f test/ --ext .test.ts"

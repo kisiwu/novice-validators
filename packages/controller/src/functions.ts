@@ -55,7 +55,6 @@ export class ControllerError extends Error {
  *
  * The handler may be sync or async and may return:
  * - nothing (`void`): the handler is expected to respond through `res` itself;
- * - the `res` object: treated as already handled;
  * - a response body (`ResBody`): sent by the wrapper.
  *
  * @template P Route parameters.
@@ -68,7 +67,7 @@ export class ControllerError extends Error {
 export interface Controller<
   P = core.ParamsDictionary,
   ResBody = any,
-  ReqBody = any,
+  ReqBody = unknown,
   ReqQuery = ParsedQs,
   Locals extends Record<string, any> = Record<string, any>,
   MetaResType = any,
@@ -77,13 +76,7 @@ export interface Controller<
     req: routing.Request<P, ResBody, ReqBody, ReqQuery, Locals, MetaResType>,
     res: core.Response<ResBody, Locals>,
     next: core.NextFunction
-  ):
-    | ResBody
-    | void
-    | core.Response<ResBody, Locals>
-    | Promise<ResBody>
-    | Promise<void>
-    | Promise<core.Response<ResBody, Locals>>;
+  ): void | Promise<void> | ResBody | Promise<ResBody>;
 }
 
 /**
@@ -116,7 +109,7 @@ export interface Controller<
 export function controller<
   P = core.ParamsDictionary,
   ResBody = any,
-  ReqBody = any,
+  ReqBody = unknown,
   ReqQuery = ParsedQs,
   Locals extends Record<string, any> = Record<string, any>,
   MetaResType = any,
@@ -186,7 +179,7 @@ export function controller<
  * in a `ReqRef` resolves to the matching entry here.
  */
 export type ReqRefDefaults = {
-  body: any;
+  body: unknown;
   params: core.ParamsDictionary;
   query: ParsedQs;
   resBody: any;
@@ -199,7 +192,7 @@ export type ReqRefDefaults = {
  * @example
  * type Refs = { params: { id: string }; body: { name: string }; resBody: { ok: boolean } };
  */
-export type ReqRef = Partial<Record<keyof ReqRefDefaults, any>>;
+export type ReqRef = Partial<Record<keyof ReqRefDefaults, unknown>>;
 
 type OutputOf<S, K extends keyof ReqRefDefaults, Fallback = ReqRefDefaults[K]> = K extends keyof S
   ? unknown extends Exclude<S[K], undefined> // missing, `any` or `unknown` -> use fallback
